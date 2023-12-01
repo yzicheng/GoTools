@@ -108,14 +108,14 @@ func (l *LocalCache) set(ctx context.Context, key string, val any, expiration ti
 // 若过期则删除
 // 删除过程增加写锁,所以是线程安全的,并且在写锁前后都增加了校验（double check）所以不会出现错删
 func (l *LocalCache) Get(ctx context.Context, key string) (any, error) {
+	// double-check
+	// 第一遍检查
 	l.RLock()
 	v, ok := l.cache[key]
 	l.RUnlock()
 	if !ok {
 		return nil, fmt.Errorf("%w ,%s", errorKeyIsNotVisit, key)
 	} else {
-		// double-check
-		// 第一遍检查
 		if v.deadLineBefore(time.Now()) {
 			l.Lock()
 			defer l.Unlock()
