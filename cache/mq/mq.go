@@ -7,34 +7,31 @@ import (
 
 type Broker struct {
 	lock  sync.Mutex
-	chans map[string][]chan Msg
+	chans []chan Msg
 }
 
 func NewBroker() *Broker {
-	chans := make(map[string][]chan Msg)
-	return &Broker{chans: chans}
+	return &Broker{}
 }
 
-func (b *Broker) Send(m Msg, topic string) error {
+func (b *Broker) Send(m Msg) error {
 	b.lock.Lock()
 	defer b.lock.Unlock()
-	if chs, ok := b.chans[topic]; ok {
-		for _, ch := range chs {
-			select {
-			case ch <- m:
-			default:
-				return errors.New("send err")
-			}
+	for _, ch := range b.chans {
+		select {
+		case ch <- m:
+		default:
+			return errors.New("send err")
 		}
 	}
 	return nil
 }
 
-func (b *Broker) Sub(maxCap int, topic string) (<-chan Msg, error) {
+func (b *Broker) Sub(maxCap int) (<-chan Msg, error) {
 	channel := make(chan Msg, maxCap)
 	b.lock.Lock()
 	defer b.lock.Unlock()
-	b.chans[topic] = append(b.chans[topic], channel)
+	b.chans = append(b.chans, channel)
 	return channel, nil
 }
 

@@ -9,14 +9,12 @@ import (
 
 func TestBroker_Send(t *testing.T) {
 	b := NewBroker()
-	topics := []string{"topic0", "topic1", "topic2"}
 	// 发送消息
 	for i := 0; i < 3; i++ {
-		topic := topics[i]
 		go func() {
 			for {
 				time.Sleep(time.Millisecond)
-				err := b.Send(Msg{Content: topic}, topic)
+				err := b.Send(Msg{Content: "xxxx"})
 				if err != nil {
 					fmt.Println(err)
 					return
@@ -30,10 +28,9 @@ func TestBroker_Send(t *testing.T) {
 	wg.Add(3)
 	for i := 0; i < 3; i++ {
 		name := fmt.Sprintf("消费者%v", i)
-		topic := topics[i]
 		go func() {
 			defer wg.Done()
-			msgs, err := b.Sub(100, topic)
+			msgs, err := b.Sub(100)
 			if err != nil {
 				fmt.Println(err)
 				return
