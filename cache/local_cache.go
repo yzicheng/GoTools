@@ -44,8 +44,6 @@ func NewBuildLocalCache(size int, expiration time.Duration, opts ...BuildLocalCa
 	}
 	tick := time.NewTicker(expiration)
 	go func() {
-		// 优化方案
-		// 这里可以使用延迟队列或者维持一个树形结构,过期的数据都在队首或者在叶子节点
 		for {
 			select {
 			case t := <-tick.C:
