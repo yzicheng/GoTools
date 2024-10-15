@@ -1,5 +1,10 @@
 package _22
 
+import (
+	"fmt"
+	"testing"
+)
+
 // 给你一个整数数组 prices ，其中 prices[i] 表示某支股票第 i 天的价格。
 //
 // 在每一天，你可以决定是否购买和/或出售股票。你在任何时候 最多 只能持有 一股 股票。你也可以先购买，然后在 同一天 出售。
@@ -24,6 +29,44 @@ package _22
 // 输入：prices = [7,6,4,3,1]
 // 输出：0
 // 解释：在这种情况下, 交易无法获得正利润，所以不参与交易可以获得最大利润，最大利润为 0。
-func maxProfit(prices []int) int {
 
+func Test(t *testing.T) {
+	tests := []struct {
+		name  string
+		nums1 []int
+	}{
+		{
+			name:  "case 1",
+			nums1: []int{7, 1, 5, 3, 6, 4},
+		},
+		{
+			name:  "case 1",
+			nums1: []int{1, 2, 3, 4, 5},
+		},
+		{
+			name:  "case 1",
+			nums1: []int{7, 6, 4, 3, 1},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sliceLen := maxProfit(tt.nums1)
+			fmt.Println(tt.nums1)
+			fmt.Println(sliceLen)
+		})
+	}
+}
+func maxProfit(prices []int) int {
+	buy := 0
+	maxPrice := 0
+	for buy < len(prices)-1 {
+		if prices[buy] >= prices[buy+1] {
+			buy++
+		} else {
+			p := prices[buy+1] - prices[buy]
+			maxPrice += p
+			buy++
+		}
+	}
+	return maxPrice
 }
