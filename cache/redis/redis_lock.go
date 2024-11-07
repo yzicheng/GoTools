@@ -33,7 +33,7 @@ func init() {
 }
 
 type RedisMutex interface {
-	Lock(string) (string, bool)
+	Lock(string, time.Duration, time.Duration) (string, bool)
 	UnLock(string, string) bool
 	Refresh(string, string, time.Duration) bool
 }
@@ -56,7 +56,7 @@ func NewRedisMuetxClient(ctx context.Context, client redis.Client) *RedisMuetxCl
 	}
 }
 
-func (r RedisMuetxClient) Lock(key string, timeout time.Duration, expire time.Duration) (string, bool) {
+func (r *RedisMuetxClient) Lock(key string, timeout time.Duration, expire time.Duration) (string, bool) {
 	if timeout < r.minTimeout {
 		timeout = r.minTimeout
 	}
@@ -83,8 +83,7 @@ func (r RedisMuetxClient) Lock(key string, timeout time.Duration, expire time.Du
 	}
 	return "", false
 }
-
-func (r RedisMuetxClient) UnLock(key string, token string) bool {
+func (r *RedisMuetxClient) UnLock(key string, token string) bool {
 	// 解锁
 	script := redis.NewScript(unlock)
 	result, err := script.Run(context.Background(), r.client, []string{key}, token).Result()
@@ -97,7 +96,7 @@ func (r RedisMuetxClient) UnLock(key string, token string) bool {
 	}
 	return true
 }
-func (r RedisMuetxClient) Refresh(key string, token string, expire time.Duration) bool {
+func (r *RedisMuetxClient) Refresh(key string, token string, expire time.Duration) bool {
 	// 续期
 	script := redis.NewScript(refresh)
 	result, err := script.Run(context.Background(), r.client, []string{key}, token, expire).Result()
