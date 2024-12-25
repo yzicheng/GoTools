@@ -19,7 +19,12 @@ type TokenLimit struct {
 	close chan struct{}
 }
 
+var tokenLimit *TokenLimit
+
 func NewBuildTokenLimit(duration time.Duration, size int) *TokenLimit {
+	if tokenLimit != nil {
+		return tokenLimit
+	}
 	ch := make(chan struct{}, size)
 	closeCh := make(chan struct{})
 	tick := time.NewTicker(duration)
@@ -39,7 +44,9 @@ func NewBuildTokenLimit(duration time.Duration, size int) *TokenLimit {
 			}
 		}
 	}()
-	return &TokenLimit{token: ch, close: closeCh}
+	tokenLimit.token = ch
+	tokenLimit.close = closeCh
+	return tokenLimit
 }
 
 // BuildServerInterceptor Grpc服务端限流

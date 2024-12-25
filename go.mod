@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/golang/mock v1.6.0
+	github.com/google/uuid v1.1.2
 	github.com/redis/go-redis/v9 v9.3.0
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/time v0.0.0-20201208040808-7e3f01d25324

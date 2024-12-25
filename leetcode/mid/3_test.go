@@ -1,6 +1,7 @@
 package mid
 
 import (
+	"fmt"
 	"slices"
 	"testing"
 )
@@ -58,6 +59,11 @@ func Test3(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		fmt.Println("Hello, World!")
+		jobid := int32(596257988)
+		fmt.Println("Hello, World!", jobid)
+		test1 := rune(jobid)
+		fmt.Println("Hello, World!", string(test1))
 		t.Run(tt.name, func(t *testing.T) {
 			l := lengthOfLongestSubstring(tt.s)
 			if l != tt.want {

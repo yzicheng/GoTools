@@ -15,6 +15,7 @@ type Broker struct {
 }
 
 func NewBroker() *Broker {
+	sync.Map{}
 	once.Do(func() {
 		chans := make(map[string][]chan Msg)
 		broker = &Broker{

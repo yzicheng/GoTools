@@ -9,6 +9,7 @@ func MergeSort(a, b []int) []int {
 			res = append(res, b[j:]...)
 			break
 		}
+
 		if j >= len(b) {
 			res = append(res, a[i:]...)
 			break
